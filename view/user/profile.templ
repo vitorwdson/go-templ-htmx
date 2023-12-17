@@ -1,7 +1,10 @@
 package user
 
 import "github.com/vitorwdson/go-templ-htmx/model/user"
+import "github.com/vitorwdson/go-templ-htmx/view/layout"
 
 templ Profile(user user.User) {
-	<h1>{ user.FirstName }</h1>
+	@layout.Base() {
+		<h1 class="text-red-500">{ user.FirstName }</h1>
+	}
 }

@@ -1,5 +1,9 @@
 package user
 
+import "github.com/vitorwdson/go-templ-htmx/view/layout"
+
 templ Register() {
-    <h1>Register page!</h1>
+	@layout.Base() {
+		<h1>Register page!</h1>
+	}
 }
