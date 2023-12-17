@@ -3,10 +3,12 @@ package layout
 templ Base() {
 	<html>
 		<head>
-			<link rel="stylesheet" href="/static/css/tailwind.css"/>
+			<link rel="stylesheet" href="/static/vendor/tailwind.css"/>
 		</head>
 		<body>
 			{ children... }
+
+			<script src="/static/vendor/htmx.min.js"></script>
 		</body>
 	</html>
 }
