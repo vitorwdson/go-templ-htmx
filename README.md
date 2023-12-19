@@ -28,3 +28,11 @@ You can also use [air](https://github.com/cosmtrek/air) to run the project in de
 ```bash
 make dev
 ```
+
+## Database
+
+This project uses a PostgreSQL database and you can configure the connection in the PG_CONNECTION_STRING environment variable. To apply the migrations, run the following command:
+
+```bash
+make migrate
+```
