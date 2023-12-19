@@ -4,7 +4,7 @@ This project is a simple web app made in go using [echo](https://github.com/labs
 
 ## Running
 
-First you need to generate the templ go files and tailwind styles using the command
+First you need to generate the templ go files and tailwind styles using the command (note that you need to [install the templ command](https://templ.guide/quick-start/installation) to generate these files)
 
 ```bash
 make generate
