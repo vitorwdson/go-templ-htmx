@@ -10,3 +10,6 @@ generate:
 
 run:
 	./dist/main
+
+migrate:
+	./dist/main --dev --migrate
