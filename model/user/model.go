@@ -1,8 +1,9 @@
 package user
 
 type User struct {
-	FirstName string
-	LastName  string
-	Email     string
-	password  string
+	ID       int
+	Username string
+	Name     string
+	Email    string
+	password string
 }
