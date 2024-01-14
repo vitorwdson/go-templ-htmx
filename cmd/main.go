@@ -30,7 +30,7 @@ func main() {
 
 	app := echo.New()
 
-	userHandler := user.UserHandler{}
+	userHandler := user.UserHandler{DB: dbConnection}
 	app.GET("/register", userHandler.Register)
 	app.GET("/login", userHandler.Login)
 	app.GET("/profile", userHandler.Profile)
