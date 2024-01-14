@@ -44,7 +44,7 @@ func SaveSession(c echo.Context, r *redis.Client, session Session) error {
 	err = r.Set(
 		c.Request().Context(),
 		"user-session:"+session.ID.String(),
-		buf,
+		buf.String(),
 		time.Duration(time.Duration.Hours(24)*7),
 	).Err()
 	if err != nil {
