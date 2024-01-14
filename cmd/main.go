@@ -28,9 +28,15 @@ func main() {
 		os.Exit(0)
 	}
 
+	redis := db.ConnectRedis()
+
 	app := echo.New()
 
-	userHandler := user.UserHandler{DB: dbConnection}
+	userHandler := user.UserHandler{
+		DB:    dbConnection,
+		Redis: redis,
+	}
+
 	app.GET("/register", userHandler.Register)
 	app.POST("/register", userHandler.PostRegister)
 	app.GET("/login", userHandler.Login)
