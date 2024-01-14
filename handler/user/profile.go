@@ -7,7 +7,7 @@ import (
 )
 
 func (h UserHandler) Profile(c echo.Context) error {
-	session, err := GetSession(c, h.Redis)
+	session, err := GetSession(c, h.Redis, h.DB)
 	if err != nil {
 		return utils.RedirectHtmx(c, "/login")
 	}

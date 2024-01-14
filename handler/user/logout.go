@@ -6,7 +6,7 @@ import (
 )
 
 func (h UserHandler) Logout(c echo.Context) error {
-	session, err := GetSession(c, h.Redis)
+	session, err := GetSession(c, h.Redis, h.DB)
 	if err == nil {
 		KillSession(c, h.Redis, *session)
 	}
