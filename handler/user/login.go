@@ -1,8 +1,6 @@
 package user
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo/v4"
 	userModel "github.com/vitorwdson/go-templ-htmx/model/user"
 	"github.com/vitorwdson/go-templ-htmx/utils"
