@@ -32,6 +32,7 @@ func main() {
 
 	userHandler := user.UserHandler{DB: dbConnection}
 	app.GET("/register", userHandler.Register)
+	app.POST("/register", userHandler.PostRegister)
 	app.GET("/login", userHandler.Login)
 	app.GET("/profile", userHandler.Profile)
 
