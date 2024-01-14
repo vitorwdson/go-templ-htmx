@@ -1,6 +1,10 @@
 package utils
 
-import "github.com/labstack/echo/v4"
+import (
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+)
 
 type Htmx struct {
 	Boosted               bool
@@ -45,4 +49,14 @@ func IsHtmx(c echo.Context) *Htmx {
 		// HX-Trigger the id of the triggered element if it exists
 		Trigger: header.Get("HX-Trigger"),
 	}
+}
+
+func RedirectHtmx(c echo.Context, url string) error {
+	htmx := IsHtmx(c)
+	if htmx == nil {
+		return c.Redirect(http.StatusTemporaryRedirect, url)
+	}
+
+	c.Response().Header().Set("HX-Location", url)
+	return c.String(http.StatusTemporaryRedirect, url)
 }
