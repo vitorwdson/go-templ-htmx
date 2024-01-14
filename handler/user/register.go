@@ -88,6 +88,11 @@ func (h UserHandler) PostRegister(c echo.Context) error {
 			return err
 		}
 
+		err = h.authenticateUser(c, user)
+		if err != nil {
+			return err
+		}
+
 		return utils.RedirectHtmx(c, "/profile")
 	}
 
