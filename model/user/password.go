@@ -20,3 +20,15 @@ func (u *User) SetPassword(newPassword []byte) error {
 	return nil
 }
 
+func (u User) ValidatePassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.password), []byte(password))
+	return err == nil
+}
+
+func CheckPasswordStrength(password string) string {
+	if password == "" {
+		return "The password can not be empty."
+	}
+
+	return ""
+}
