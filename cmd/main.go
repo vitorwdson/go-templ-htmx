@@ -33,6 +33,7 @@ func main() {
 	userHandler := user.UserHandler{}
 	app.GET("/register", userHandler.Register)
 	app.GET("/login", userHandler.Login)
+	app.GET("/profile", userHandler.Profile)
 
 	if *devMode {
 		fs := http.FileServer(http.Dir("./static/"))

@@ -9,8 +9,7 @@ import (
 
 func (h UserHandler) Profile(c echo.Context) error {
 	u := userModel.User{
-		FirstName: "Vitor",
-		LastName: "Wdson",
+		Name: "Vitor Wdson",
 		Email: "vitor.wdson2@gmail.com",
 	}
 
