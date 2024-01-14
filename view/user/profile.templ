@@ -5,6 +5,6 @@ import "github.com/vitorwdson/go-templ-htmx/view/layout"
 
 templ Profile(user user.User) {
 	@layout.Base() {
-		<h1 class="text-red-500">{ user.FirstName }</h1>
+		<h1 class="text-red-500">Hello, { user.Name }!</h1>
 	}
 }
