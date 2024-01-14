@@ -36,11 +36,7 @@ func main() {
 		DB:    dbConnection,
 		Redis: redis,
 	}
-
-	app.GET("/register", userHandler.Register)
-	app.POST("/register", userHandler.PostRegister)
-	app.GET("/login", userHandler.Login)
-	app.GET("/profile", userHandler.Profile)
+	userHandler.SetupRoutes(app)
 
 	if *devMode {
 		fs := http.FileServer(http.Dir("./static/"))

@@ -2,9 +2,17 @@ package user
 
 import "github.com/vitorwdson/go-templ-htmx/view/layout"
 
-templ Login() {
+type LoginViewProps struct {
+	Username string
+	Error    string
+}
+
+templ Login(props LoginViewProps) {
 	@layout.Base() {
-		<form class="flex-1 flex items-center justify-center">
+		<form
+			class="flex-1 flex items-center justify-center"
+			hx-post="/login"
+		>
 			<div
 				class="rounded-lg border bg-white text-card-foreground shadow-sm w-full max-w-md"
 				data-v0-t="card"
@@ -32,6 +40,7 @@ templ Login() {
 							placeholder="Username"
 							required=""
 							type="text"
+							value={props.Username}
 						/>
 					</div>
 					<div class="space-y-2">
@@ -48,6 +57,9 @@ templ Login() {
 							required=""
 							type="password"
 						/>
+						if props.Error != "" {
+							<p class="text-red-400 text-sm text-left !mt-0">{ props.Error }</p>
+						}
 					</div>
 				</div>
 				<div class="flex items-center p-6">
