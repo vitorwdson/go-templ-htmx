@@ -20,4 +20,6 @@ func (h *UserHandler) SetupRoutes(app *echo.Echo) {
 	app.POST("/login", h.PostLogin)
 
 	app.GET("/profile", h.Profile)
+
+	app.Any("/logout", h.Logout)
 }

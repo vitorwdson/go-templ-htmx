@@ -95,3 +95,26 @@ func GetSession(c echo.Context, r *redis.Client) (*Session, error) {
 
 	return &session, nil
 }
+
+func KillSession(c echo.Context, r *redis.Client, session Session) error {
+	err := r.Del(
+		c.Request().Context(),
+		"user-session:"+session.ID.String(),
+	).Err()
+	if err != nil {
+		return err
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:  "SESSION-KEY",
+		Value: "",
+
+		Path:    "/",
+		Expires: time.Unix(0, 0),
+
+		Secure:   false, // TODO: Get this from env variable
+		HttpOnly: true,
+	})
+
+	return nil
+}
