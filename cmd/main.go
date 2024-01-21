@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/vitorwdson/go-templ-htmx/db"
-	"github.com/vitorwdson/go-templ-htmx/handler/user"
+	"github.com/vitorwdson/go-templ-htmx/handler"
 )
 
 func main() {
@@ -32,11 +32,11 @@ func main() {
 
 	app := echo.New()
 
-	userHandler := user.UserHandler{
+	h := handler.Handler{
 		DB:    dbConnection,
 		Redis: redis,
 	}
-	userHandler.SetupRoutes(app)
+	h.SetupRoutes(app)
 
 	if *devMode {
 		fs := http.FileServer(http.Dir("./static/"))

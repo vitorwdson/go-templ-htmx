@@ -1,4 +1,4 @@
-package user
+package handler
 
 import (
 	"github.com/labstack/echo/v4"
@@ -12,12 +12,12 @@ type loginFormData struct {
 	Password string `form:"password"`
 }
 
-func (h UserHandler) Login(c echo.Context) error {
+func (h Handler) Login(c echo.Context) error {
 	props := userView.LoginViewProps{}
 	return utils.Render(c, userView.Login(props))
 }
 
-func (h UserHandler) PostLogin(c echo.Context) error {
+func (h Handler) PostLogin(c echo.Context) error {
 	var data registerFormData
 
 	err := c.Bind(&data)
@@ -35,7 +35,7 @@ func (h UserHandler) PostLogin(c echo.Context) error {
 		return utils.Render(c, userView.Login(props))
 	}
 
-	err = h.authenticateUser(c, user)
+	err = h.authenticateUser(c, *user)
 	if err != nil {
 		return err
 	}

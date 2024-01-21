@@ -1,4 +1,4 @@
-package user
+package handler
 
 import (
 	"bytes"
@@ -20,7 +20,7 @@ type Session struct {
 	NextQuery time.Time
 }
 
-func (h UserHandler) authenticateUser(c echo.Context, user *userModel.User) error {
+func (h Handler) authenticateUser(c echo.Context, user userModel.User) error {
 	sessionId, err := uuid.NewUUID()
 	if err != nil {
 		return err
@@ -28,7 +28,7 @@ func (h UserHandler) authenticateUser(c echo.Context, user *userModel.User) erro
 
 	session := Session{
 		ID:        sessionId,
-		User:      *user,
+		User:      user,
 		NextQuery: time.Now().Add(time.Minute * 5),
 	}
 

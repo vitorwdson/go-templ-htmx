@@ -1,4 +1,4 @@
-package user
+package handler
 
 import (
 	"database/sql"
@@ -7,12 +7,12 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type UserHandler struct {
+type Handler struct {
 	DB    *sql.DB
 	Redis *redis.Client
 }
 
-func (h *UserHandler) SetupRoutes(app *echo.Echo) {
+func (h *Handler) SetupRoutes(app *echo.Echo) {
 	app.GET("/register", h.Register)
 	app.POST("/register", h.PostRegister)
 
