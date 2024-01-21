@@ -8,8 +8,9 @@ import (
 )
 
 type Handler struct {
-	DB    *sql.DB
-	Redis *redis.Client
+	DB      *sql.DB
+	Redis   *redis.Client
+	DevMode bool
 }
 
 func (h *Handler) SetupRoutes(app *echo.Echo) {

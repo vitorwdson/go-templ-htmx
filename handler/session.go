@@ -30,10 +30,10 @@ func (h Handler) authenticateUser(c echo.Context, user userModel.User) error {
 		NextQuery: time.Now().Add(time.Minute * 5),
 	}
 
-	return h.SaveSession(c, session)
+	return h.saveSession(c, session)
 }
 
-func (h Handler)  SaveSession(c echo.Context, session Session) error {
+func (h Handler)  saveSession(c echo.Context, session Session) error {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 
@@ -59,7 +59,7 @@ func (h Handler)  SaveSession(c echo.Context, session Session) error {
 		Path:    "/",
 		Expires: time.Now().AddDate(0, 0, 7),
 
-		Secure:   false, // TODO: Get this from env variable
+		Secure:   !h.DevMode,
 		HttpOnly: true,
 	})
 
@@ -104,7 +104,7 @@ func (h Handler)  GetSession(c echo.Context) (*Session, error) {
 		session.User = *user
 		session.NextQuery = time.Now().Add(time.Minute * 5)
 
-		err = h.SaveSession(c, session)
+		err = h.saveSession(c, session)
 		if err != nil {
 			return nil, err
 		}
@@ -129,7 +129,7 @@ func (h Handler)  KillSession(c echo.Context, session Session) error {
 		Path:    "/",
 		Expires: time.Unix(0, 0),
 
-		Secure:   false, // TODO: Get this from env variable
+		Secure:   !h.DevMode,
 		HttpOnly: true,
 	})
 

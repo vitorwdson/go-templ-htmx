@@ -35,6 +35,7 @@ func main() {
 	h := handler.Handler{
 		DB:    dbConnection,
 		Redis: redis,
+		DevMode: *devMode,
 	}
 	h.SetupRoutes(app)
 
