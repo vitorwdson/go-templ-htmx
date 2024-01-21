@@ -6,9 +6,9 @@ import (
 )
 
 func (h Handler) Logout(c echo.Context) error {
-	session, err := GetSession(c, h.Redis, h.DB)
+	session, err := h.GetSession(c)
 	if err == nil {
-		KillSession(c, h.Redis, *session)
+		h.KillSession(c, *session)
 	}
 
 	return utils.RedirectHtmx(c, "/login")

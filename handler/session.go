@@ -2,7 +2,6 @@ package handler
 
 import (
 	"bytes"
-	"database/sql"
 	"encoding/gob"
 	"errors"
 	"net/http"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/redis/go-redis/v9"
 	userModel "github.com/vitorwdson/go-templ-htmx/model/user"
 )
 
@@ -32,10 +30,10 @@ func (h Handler) authenticateUser(c echo.Context, user userModel.User) error {
 		NextQuery: time.Now().Add(time.Minute * 5),
 	}
 
-	return SaveSession(c, h.Redis, session)
+	return h.SaveSession(c, session)
 }
 
-func SaveSession(c echo.Context, r *redis.Client, session Session) error {
+func (h Handler)  SaveSession(c echo.Context, session Session) error {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 
@@ -44,7 +42,7 @@ func SaveSession(c echo.Context, r *redis.Client, session Session) error {
 		return err
 	}
 
-	err = r.Set(
+	err = h.Redis.Set(
 		c.Request().Context(),
 		"user-session:"+session.ID.String(),
 		buf.String(),
@@ -68,14 +66,14 @@ func SaveSession(c echo.Context, r *redis.Client, session Session) error {
 	return nil
 }
 
-func GetSession(c echo.Context, r *redis.Client, db *sql.DB) (*Session, error) {
+func (h Handler)  GetSession(c echo.Context) (*Session, error) {
 	sessionCookie, err := c.Cookie("SESSION-KEY")
 	if err != nil {
 		return nil, err
 	}
 
 	sessionId := sessionCookie.Value
-	sessionGob, err := r.Get(
+	sessionGob, err := h.Redis.Get(
 		c.Request().Context(),
 		"user-session:"+sessionId,
 	).Result()
@@ -98,7 +96,7 @@ func GetSession(c echo.Context, r *redis.Client, db *sql.DB) (*Session, error) {
 
 	if session.NextQuery.Compare(time.Now()) == -1 {
 
-		user, err := userModel.GetByID(db, session.User.ID)
+		user, err := userModel.GetByID(h.DB, session.User.ID)
 		if err != nil || user == nil {
 			return nil, errors.New("Invalid user")
 		}
@@ -106,7 +104,7 @@ func GetSession(c echo.Context, r *redis.Client, db *sql.DB) (*Session, error) {
 		session.User = *user
 		session.NextQuery = time.Now().Add(time.Minute * 5)
 
-		err = SaveSession(c, r, session)
+		err = h.SaveSession(c, session)
 		if err != nil {
 			return nil, err
 		}
@@ -115,8 +113,8 @@ func GetSession(c echo.Context, r *redis.Client, db *sql.DB) (*Session, error) {
 	return &session, nil
 }
 
-func KillSession(c echo.Context, r *redis.Client, session Session) error {
-	err := r.Del(
+func (h Handler)  KillSession(c echo.Context, session Session) error {
+	err := h.Redis.Del(
 		c.Request().Context(),
 		"user-session:"+session.ID.String(),
 	).Err()
