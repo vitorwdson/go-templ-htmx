@@ -3,11 +3,6 @@ package user
 import "database/sql"
 
 func (u *User) Save(db *sql.DB) error {
-	err := u.Validate()
-	if err != nil {
-		return err
-	}
-
 	if u.ID != 0 {
 		// User exists in db, should update
 		if u.password != "" {
