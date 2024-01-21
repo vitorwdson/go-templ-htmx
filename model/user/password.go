@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -22,8 +23,26 @@ func (u User) ValidatePassword(password string) bool {
 }
 
 func CheckPasswordStrength(password string) string {
-	if password == "" {
-		return "The password can not be empty."
+	if len(password) < 8 {
+		return "The password must contain at least eight characters."
+	}
+
+	if !strings.ContainsFunc(password, func(r rune) bool {
+		return r >= '0' && r <= '9'
+	}) {
+		return "The password must contain at least one number."
+	}
+
+	if !strings.ContainsFunc(password, func(r rune) bool {
+		return r >= 'A' && r <= 'Z'
+	}) {
+		return "The password must contain at least one uppercase letter."
+	}
+
+	if !strings.ContainsFunc(password, func(r rune) bool {
+		return r >= 'a' && r <= 'z'
+	}) {
+		return "The password must contain at least one lowercase letter."
 	}
 
 	return ""
