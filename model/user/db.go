@@ -7,28 +7,26 @@ func (u *User) Save(db *sql.DB) error {
 		// User exists in db, should update
 		if u.password != "" {
 			_, err := db.Exec(`
-                UPDATE
-                    users
-                SET
-                    password = $1,
-                    name = $2,
-                    email = $3
-                WHERE
-                    id = $4;
-            `, u.password, u.Name, u.Email, u.ID)
+				UPDATE users
+				SET
+				    password = $1,
+				    name = $2,
+				    email = $3
+				WHERE
+				    id = $4;
+			`, u.password, u.Name, u.Email, u.ID)
 			if err != nil {
 				return err
 			}
 		} else {
 			_, err := db.Exec(`
-                UPDATE
-                    users
-                SET
-                    name = $1,
-                    email = $2
-                WHERE
-                    id = $3;
-            `, u.Name, u.Email, u.ID)
+				UPDATE users
+				SET
+				    name = $1,
+				    email = $2
+				WHERE
+				    id = $3;
+			`, u.Name, u.Email, u.ID)
 			if err != nil {
 				return err
 			}
@@ -36,20 +34,13 @@ func (u *User) Save(db *sql.DB) error {
 	} else {
 		// User doesn't exists in db, should insert
 		err := db.QueryRow(`
-            INSERT INTO
-                users (
-                    username,
-                    password,
-                    name,
-                    email
-                )
-            VALUES (
-                $1,
-                $2,
-                $3,
-                $4
-            ) RETURNING id;
-        `, u.Username, u.password, u.Name, u.Email).Scan(&u.ID)
+			INSERT INTO
+			    users (username, password, name, email)
+			VALUES
+			    ($1, $2, $3, $4)
+			RETURNING
+			    id;
+		`, u.Username, u.password, u.Name, u.Email).Scan(&u.ID)
 		if err != nil {
 			return err
 		}
@@ -67,7 +58,6 @@ func getUserFromQuery(row *sql.Row) (*User, error) {
 		&user.Name,
 		&user.Email,
 	)
-
 	if err != nil {
 		return nil, err
 	}
@@ -77,34 +67,34 @@ func getUserFromQuery(row *sql.Row) (*User, error) {
 
 func GetByID(db *sql.DB, id int) (*User, error) {
 	row := db.QueryRow(`
-        SELECT
-            id,
-            username,
-            password,
-            name,
-            email
-        FROM
-            users
-        WHERE
-            id = $1;            
-    `, id)
+		SELECT
+		    id,
+		    username,
+		    password,
+		    name,
+		    email
+		FROM
+		    users
+		WHERE
+		    id = $1;
+	`, id)
 
 	return getUserFromQuery(row)
 }
 
 func GetByUsername(db *sql.DB, username string) (*User, error) {
 	row := db.QueryRow(`
-        SELECT
-            id,
-            username,
-            password,
-            name,
-            email
-        FROM
-            users
-        WHERE
-            username = $1;            
-    `, username)
+		SELECT
+		    id,
+		    username,
+		    password,
+		    name,
+		    email
+		FROM
+		    users
+		WHERE
+		    username = $1;
+	`, username)
 
 	return getUserFromQuery(row)
 }
