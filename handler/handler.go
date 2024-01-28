@@ -2,9 +2,12 @@ package handler
 
 import (
 	"database/sql"
+	"net/http"
 
 	"github.com/redis/go-redis/v9"
 )
+
+type RouteHandler func(http.ResponseWriter, *http.Request) error
 
 type handler struct {
 	DB      *sql.DB
