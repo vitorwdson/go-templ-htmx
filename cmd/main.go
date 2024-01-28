@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 	"net/http"
 	"os"
 
@@ -29,7 +30,8 @@ func main() {
 
 	redis := db.MustConnectRedis()
 
-	h := handler.New(dbConnection, redis, *devMode)
+	logger := log.Default()
+	h := handler.New(dbConnection, redis, logger, *devMode)
 	h.SetupRoutes()
 
 	if *devMode {
@@ -37,5 +39,9 @@ func main() {
 		http.Handle("/static/", http.StripPrefix("/static/", fs))
 	}
 
-	http.ListenAndServe(":3333", nil)
+	logger.Println("Listening on port 3333")
+	err := http.ListenAndServe(":3333", nil)
+	if err != nil {
+		panic(err)
+	}
 }
