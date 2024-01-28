@@ -29,15 +29,10 @@ func main() {
 	}
 
 	redis := db.MustConnectRedis()
-
 	logger := log.Default()
-	h := handler.New(dbConnection, redis, logger, *devMode)
-	h.SetupRoutes()
 
-	if *devMode {
-		fs := http.FileServer(http.Dir("./static/"))
-		http.Handle("/static/", http.StripPrefix("/static/", fs))
-	}
+	s := handler.NewServer(dbConnection, redis, logger, *devMode)
+	s.SetupRoutes()
 
 	logger.Println("Listening on port 3333")
 	err := http.ListenAndServe(":3333", nil)

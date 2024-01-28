@@ -10,15 +10,15 @@ import (
 
 type RouteHandler func(http.ResponseWriter, *http.Request) error
 
-type handler struct {
+type server struct {
 	DB      *sql.DB
 	Redis   *redis.Client
 	Logger  *log.Logger
 	DevMode bool
 }
 
-func New(db *sql.DB, r *redis.Client, logger *log.Logger, devMode bool) handler {
-	return handler{
+func NewServer(db *sql.DB, r *redis.Client, logger *log.Logger, devMode bool) server {
+	return server{
 		DB:      db,
 		Redis:   r,
 		Logger:  logger,
@@ -26,5 +26,9 @@ func New(db *sql.DB, r *redis.Client, logger *log.Logger, devMode bool) handler 
 	}
 }
 
-func (h handler) SetupRoutes() {
+func (s server) SetupRoutes() {
+	if s.DevMode {
+		fs := http.FileServer(http.Dir("./static/"))
+		http.Handle("/static/", http.StripPrefix("/static/", fs))
+	}
 }

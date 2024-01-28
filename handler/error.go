@@ -32,7 +32,7 @@ var (
 	}
 )
 
-func (h handler) handleErrors(f RouteHandler) http.HandlerFunc {
+func (s server) handleErrors(f RouteHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := f(w, r)
 		if err == nil {
