@@ -14,18 +14,22 @@ type Htmx struct {
 	Trigger               string
 }
 
-func IsHtmx(r *http.Request) *Htmx {
-	header := r.Header
-
+func IsHtmx(r *http.Request) bool {
 	// HX-Request always “true”
-	if req := header.Get("HX-Request"); req != "true" {
-		return nil
+	if req := r.Header.Get("HX-Request"); req != "true" {
+		return false
 	}
+
+	return true
+}
+
+func GetHtmxData(r *http.Request) Htmx {
+	header := r.Header
 
 	boosted := header.Get("HX-Boosted") == "true"
 	historyRestoreRequest := header.Get("HX-History-Restore-Request") == "true"
 
-	return &Htmx{
+	return Htmx{
 		// HX-Boosted indicates that the request is via an element using hx-boost
 		Boosted: boosted,
 
@@ -51,7 +55,7 @@ func IsHtmx(r *http.Request) *Htmx {
 
 func RedirectHtmx(w http.ResponseWriter, r *http.Request, url string) error {
 	htmx := IsHtmx(r)
-	if htmx == nil {
+	if htmx {
 		http.Redirect(w, r, url, http.StatusFound)
 		return nil
 	}
