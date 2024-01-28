@@ -1,6 +1,6 @@
 # GO-TEMPL-HTMX
 
-This project is a simple web app made in go using [echo](https://github.com/labstack/echo), [templ](https://github.com/a-h/templ), [htmx](https://htmx.org/) and [tailwind](https://tailwindcss.com/).
+This project is a simple web app made in go using [templ](https://github.com/a-h/templ), [htmx](https://htmx.org/) and [tailwind](https://tailwindcss.com/).
 
 ## Running
 

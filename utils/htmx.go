@@ -2,8 +2,6 @@ package utils
 
 import (
 	"net/http"
-
-	"github.com/labstack/echo/v4"
 )
 
 type Htmx struct {
@@ -16,8 +14,8 @@ type Htmx struct {
 	Trigger               string
 }
 
-func IsHtmx(c echo.Context) *Htmx {
-	header := c.Request().Header
+func IsHtmx(r *http.Request) *Htmx {
+	header := r.Header
 
 	// HX-Request always “true”
 	if req := header.Get("HX-Request"); req != "true" {
@@ -51,12 +49,15 @@ func IsHtmx(c echo.Context) *Htmx {
 	}
 }
 
-func RedirectHtmx(c echo.Context, url string) error {
-	htmx := IsHtmx(c)
+func RedirectHtmx(w http.ResponseWriter, r *http.Request, url string) error {
+	htmx := IsHtmx(r)
 	if htmx == nil {
-		return c.Redirect(http.StatusTemporaryRedirect, url)
+		http.Redirect(w, r, url, http.StatusFound)
+		return nil
 	}
 
-	c.Response().Header().Set("HX-Location", url)
-	return c.String(http.StatusTemporaryRedirect, url)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("HX-Location", url)
+
+	return nil
 }

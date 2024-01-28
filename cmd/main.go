@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/labstack/echo/v4"
 	"github.com/vitorwdson/go-templ-htmx/db"
 	"github.com/vitorwdson/go-templ-htmx/handler"
 )
@@ -30,19 +29,13 @@ func main() {
 
 	redis := db.ConnectRedis()
 
-	app := echo.New()
-
-	h := handler.Handler{
-		DB:    dbConnection,
-		Redis: redis,
-		DevMode: *devMode,
-	}
-	h.SetupRoutes(app)
+	h := handler.New(dbConnection, redis, *devMode)
+	h.SetupRoutes()
 
 	if *devMode {
 		fs := http.FileServer(http.Dir("./static/"))
-		app.GET("/static/*", echo.WrapHandler(http.StripPrefix("/static/", fs)))
+		http.Handle("/static/", http.StripPrefix("/static/", fs))
 	}
 
-	app.Start(":3333")
+	http.ListenAndServe(":3333", nil)
 }

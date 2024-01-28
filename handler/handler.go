@@ -3,24 +3,22 @@ package handler
 import (
 	"database/sql"
 
-	"github.com/labstack/echo/v4"
 	"github.com/redis/go-redis/v9"
 )
 
-type Handler struct {
+type handler struct {
 	DB      *sql.DB
 	Redis   *redis.Client
 	DevMode bool
 }
 
-func (h *Handler) SetupRoutes(app *echo.Echo) {
-	app.GET("/register", h.Register)
-	app.POST("/register", h.PostRegister)
+func New(db *sql.DB, r *redis.Client, devMode bool) handler {
+	return handler{
+		DB:      db,
+		Redis:   r,
+		DevMode: devMode,
+	}
+}
 
-	app.GET("/login", h.Login)
-	app.POST("/login", h.PostLogin)
-
-	app.GET("/profile", h.Profile)
-
-	app.Any("/logout", h.Logout)
+func (h handler) SetupRoutes() {
 }
