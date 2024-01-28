@@ -44,8 +44,9 @@ func main() {
 	}
 
 	redis := db.MustConnectRedis()
-	logger := log.Default()
+	defer redis.Close()
 
+	logger := log.Default()
 	s := handler.NewServer(dbConnection, redis, logger, devMode)
 	s.SetupRoutes()
 
