@@ -19,7 +19,7 @@ func main() {
 		godotenv.Load()
 	}
 
-	dbConnection := db.Connect()
+	dbConnection := db.MustConnect()
 	defer dbConnection.Close()
 
 	if *runMigrations {
@@ -27,7 +27,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	redis := db.ConnectRedis()
+	redis := db.MustConnectRedis()
 
 	h := handler.New(dbConnection, redis, *devMode)
 	h.SetupRoutes()
