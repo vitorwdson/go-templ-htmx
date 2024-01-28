@@ -11,19 +11,34 @@ import (
 	"github.com/vitorwdson/go-templ-htmx/handler"
 )
 
-func main() {
-	devMode := flag.Bool("dev", false, "Use develoment mode")
-	runMigrations := flag.Bool("migrate", false, "Applies migrations and exits the program")
-	flag.Parse()
+func parseFlags() (devMode bool, runMigrations bool) {
+	devModeFlag := flag.Bool(
+		"dev",
+		false,
+		"Use develoment mode",
+	)
 
-	if *devMode {
+	runMigrationsFlag := flag.Bool(
+		"migrate",
+		false,
+		"Applies migrations and exits the program",
+	)
+
+	flag.Parse()
+	return *devModeFlag, *runMigrationsFlag
+}
+
+func main() {
+	devMode, runMigrations := parseFlags()
+
+	if devMode {
 		godotenv.Load()
 	}
 
 	dbConnection := db.MustConnect()
 	defer dbConnection.Close()
 
-	if *runMigrations {
+	if runMigrations {
 		db.RunMigrations(dbConnection)
 		os.Exit(0)
 	}
@@ -31,7 +46,7 @@ func main() {
 	redis := db.MustConnectRedis()
 	logger := log.Default()
 
-	s := handler.NewServer(dbConnection, redis, logger, *devMode)
+	s := handler.NewServer(dbConnection, redis, logger, devMode)
 	s.SetupRoutes()
 
 	logger.Println("Listening on port 3333")
