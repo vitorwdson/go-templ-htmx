@@ -60,8 +60,8 @@ func RedirectHtmx(w http.ResponseWriter, r *http.Request, url string) error {
 		return nil
 	}
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("HX-Location", url)
+	w.WriteHeader(http.StatusOK)
 
 	return nil
 }
