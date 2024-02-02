@@ -16,7 +16,7 @@ func (e ServerError) Error() string {
 }
 
 var (
-	UserNotAuthenticated = ServerError{
+	UserNotAuthenticatedError = ServerError{
 		Message:    "User not authenticated",
 		StatusCode: http.StatusForbidden,
 	}
@@ -26,12 +26,12 @@ var (
 		StatusCode: http.StatusForbidden,
 	}
 
-	InvalidBody = ServerError{
+	InvalidBodyError = ServerError{
 		Message:    "Invalid body",
 		StatusCode: http.StatusBadRequest,
 	}
 
-	InvalidMethod = ServerError{
+	InvalidMethodError = ServerError{
 		Message:    "Method not allowed",
 		StatusCode: http.StatusMethodNotAllowed,
 	}
@@ -39,10 +39,14 @@ var (
 
 func (s server) handleErrors(f RouteHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		s.Logger.Println(r.URL.Path)
+
 		err := f(w, r)
 		if err == nil {
 			return
 		}
+
+		s.Logger.Println("Error: ", err)
 
 		serr, ok := err.(ServerError)
 		if !ok {
@@ -50,7 +54,7 @@ func (s server) handleErrors(f RouteHandler) http.HandlerFunc {
 			w.Write([]byte(err.Error()))
 		}
 
-		if serr == UserNotAuthenticated {
+		if serr == UserNotAuthenticatedError {
 			utils.RedirectHtmx(w, r, "/login")
 			return
 		}
