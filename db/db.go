@@ -7,7 +7,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Connect() *sql.DB {
+func MustConnect() *sql.DB {
 	connectionString := os.Getenv("PG_CONNECTION_STRING")
 	db, err := sql.Open("postgres", connectionString)
 	if err != nil {

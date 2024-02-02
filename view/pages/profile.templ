@@ -1,0 +1,9 @@
+package pages
+
+import "github.com/vitorwdson/go-templ-htmx/view/layout"
+
+templ Profile(name string) {
+	@layout.Base() {
+		<h1 class="text-red-500">Hello, { name }!</h1>
+	}
+}

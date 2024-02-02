@@ -1,16 +1,17 @@
 package handler
 
 import (
-	"github.com/labstack/echo/v4"
+	"net/http"
+
 	"github.com/vitorwdson/go-templ-htmx/utils"
-	userView "github.com/vitorwdson/go-templ-htmx/view/user"
+	"github.com/vitorwdson/go-templ-htmx/view/pages"
 )
 
-func (h Handler) Profile(c echo.Context) error {
-	session, err := h.GetSession(c)
+func (s server) handleProfile(w http.ResponseWriter, r *http.Request) error {
+	session, err := s.GetSession(w, r)
 	if err != nil {
-		return utils.RedirectHtmx(c, "/login")
+		return UserNotAuthenticatedError
 	}
 
-	return utils.Render(c, userView.Profile(session.User))
+	return utils.Render(w, r, pages.Profile(session.User.Name))
 }

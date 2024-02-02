@@ -1,46 +1,47 @@
 package handler
 
 import (
-	"github.com/labstack/echo/v4"
-	userModel "github.com/vitorwdson/go-templ-htmx/model/user"
+	"net/http"
+
+	"github.com/vitorwdson/go-templ-htmx/data/models"
 	"github.com/vitorwdson/go-templ-htmx/utils"
-	userView "github.com/vitorwdson/go-templ-htmx/view/user"
+	"github.com/vitorwdson/go-templ-htmx/view/pages"
 )
 
-type registerFormData struct {
-	Name            string `form:"name"`
-	Username        string `form:"username"`
-	Email           string `form:"email"`
-	Password        string `form:"password"`
-	ConfirmPassword string `form:"confirm-password"`
+func (s server) handleRegister(w http.ResponseWriter, r *http.Request) error {
+	if r.Method == http.MethodGet {
+		return s.handleRegisterGET(w, r)
+	} else if r.Method == http.MethodPost {
+		return s.handleRegisterPOST(w, r)
+	}
+
+	return InvalidMethodError
 }
 
-func (h Handler) Register(c echo.Context) error {
-	props := userView.RegisterViewProps{}
+func (s server) handleRegisterGET(w http.ResponseWriter, r *http.Request) error {
+	props := pages.RegisterViewProps{}
 
-	return utils.Render(c, userView.Register(props))
+	return utils.Render(w, r, pages.Register(props))
 }
 
-func (h Handler) PostRegister(c echo.Context) error {
-	var data registerFormData
-
-	err := c.Bind(&data)
+func (s server) handleRegisterPOST(w http.ResponseWriter, r *http.Request) error {
+	data, err := parseRegisterFormData(r)
 	if err != nil {
 		return err
 	}
+	s.Logger.Println(data)
 
-	validation := userModel.Validate(
+	validation := s.UserRepo.Validate(
 		data.Name,
 		data.Username,
 		data.Email,
 		data.Password,
 		data.ConfirmPassword,
-		h.DB,
 	)
 
-	var user *userModel.User
+	var user *models.User
 	if !validation.Error {
-		user = &userModel.User{
+		user = &models.User{
 			Name:     data.Name,
 			Username: data.Username,
 			Email:    data.Email,
@@ -51,20 +52,20 @@ func (h Handler) PostRegister(c echo.Context) error {
 			return err
 		}
 
-		err = user.Save(h.DB)
+		err = s.UserRepo.Save(user)
 		if err != nil {
 			return err
 		}
 
-		err = h.authenticateUser(c, *user)
+		err = s.authenticateUser(w, r, *user)
 		if err != nil {
 			return err
 		}
 
-		return utils.RedirectHtmx(c, "/profile")
+		return utils.RedirectHtmx(w, r, "/profile")
 	}
 
-	props := userView.RegisterViewProps{
+	props := pages.RegisterViewProps{
 		Name:          data.Name,
 		Username:      data.Username,
 		Email:         data.Email,
@@ -74,5 +75,27 @@ func (h Handler) PostRegister(c echo.Context) error {
 		PasswordError: validation.PasswordError,
 	}
 
-	return utils.Render(c, userView.Register(props))
+	return utils.Render(w, r, pages.Register(props))
+}
+
+type registerFormData struct {
+	Name            string
+	Username        string
+	Email           string
+	Password        string
+	ConfirmPassword string
+}
+
+func parseRegisterFormData(r *http.Request) (*registerFormData, error) {
+	r.ParseForm()
+
+	data := registerFormData{
+		Name:            r.Form.Get("name"),
+		Username:        r.Form.Get("username"),
+		Email:           r.Form.Get("email"),
+		Password:        r.Form.Get("password"),
+		ConfirmPassword: r.Form.Get("confirm-password"),
+	}
+
+	return &data, nil
 }

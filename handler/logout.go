@@ -1,15 +1,16 @@
 package handler
 
 import (
-	"github.com/labstack/echo/v4"
+	"net/http"
+
 	"github.com/vitorwdson/go-templ-htmx/utils"
 )
 
-func (h Handler) Logout(c echo.Context) error {
-	session, err := h.GetSession(c)
+func (s server) handleLogout(w http.ResponseWriter, r *http.Request) error {
+	session, err := s.GetSession(w, r)
 	if err == nil {
-		h.KillSession(c, *session)
+		s.KillSession(w, r, *session)
 	}
 
-	return utils.RedirectHtmx(c, "/login")
+	return utils.RedirectHtmx(w, r, "/login")
 }

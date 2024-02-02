@@ -1,7 +1,7 @@
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id serial PRIMARY KEY,
     username VARCHAR(30) UNIQUE NOT NULL,
-    password TEXT NOT NULL,
+    password_hash TEXT NOT NULL,
     name TEXT NOT NULL,
     email VARCHAR(100)
 );

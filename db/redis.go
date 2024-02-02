@@ -1,17 +1,25 @@
 package db
 
 import (
+	"context"
 	"os"
 
 	"github.com/redis/go-redis/v9"
 )
 
-func ConnectRedis() *redis.Client {
+func MustConnectRedis() *redis.Client {
 	connectionString := os.Getenv("REDIS_CONNECTION_STRING")
 	opt, err := redis.ParseURL(connectionString)
 	if err != nil {
 		panic(err)
 	}
 
-	return redis.NewClient(opt)
+	client := redis.NewClient(opt)
+
+	err = client.Ping(context.Background()).Err()
+	if err != nil {
+		panic(err)
+	}
+
+	return client
 }

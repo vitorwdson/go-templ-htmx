@@ -1,5 +1,5 @@
-build:
-	go build -o ./dist/main ./cmd/main.go
+build: generate
+	go build -o ./dist/main ./cmd/server/main.go
 
 dev:
 	air
@@ -8,8 +8,11 @@ generate:
 	templ generate
 	./tailwindcss -o ./static/vendor/tailwind.css
 
-run:
+run: build
 	./dist/main
 
-migrate:
-	./dist/main --dev --migrate
+build-migrate:
+	go build -o ./dist/migrate ./cmd/migrate/main.go
+
+migrate: build-migrate
+	./dist/migrate

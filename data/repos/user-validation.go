@@ -1,8 +1,6 @@
-package user
+package repos
 
-import (
-	"database/sql"
-)
+import "strings"
 
 type validationResult struct {
 	Error         bool
@@ -12,9 +10,8 @@ type validationResult struct {
 	PasswordError string
 }
 
-func Validate(
+func (r UserRepo) Validate(
 	name, username, email, password, confirmPassword string,
-	db *sql.DB,
 ) validationResult {
 	result := validationResult{
 		Error: false,
@@ -31,12 +28,12 @@ func Validate(
 	} else if len(username) > 30 {
 		result.UsernameError = "The username is too big (max: 30)"
 		result.Error = true
-	} else if u, _ := GetByUsername(db, username); u != nil {
+	} else if u, _ := r.GetByUsername(username); u != nil {
 		result.UsernameError = "This username already exists."
 		result.Error = true
 	}
 
-	result.PasswordError = CheckPasswordStrength(password)
+	result.PasswordError = r.CheckPasswordStrength(password)
 	if len([]byte(password)) > 72 {
 		result.PasswordError = "The informed password is too big"
 	} else if result.PasswordError == "" && password != confirmPassword {
@@ -56,4 +53,30 @@ func Validate(
 	}
 
 	return result
+}
+
+func (r UserRepo) CheckPasswordStrength(password string) string {
+	if len(password) < 8 {
+		return "The password must contain at least eight characters."
+	}
+
+	if !strings.ContainsFunc(password, func(r rune) bool {
+		return r >= '0' && r <= '9'
+	}) {
+		return "The password must contain at least one number."
+	}
+
+	if !strings.ContainsFunc(password, func(r rune) bool {
+		return r >= 'A' && r <= 'Z'
+	}) {
+		return "The password must contain at least one uppercase letter."
+	}
+
+	if !strings.ContainsFunc(password, func(r rune) bool {
+		return r >= 'a' && r <= 'z'
+	}) {
+		return "The password must contain at least one lowercase letter."
+	}
+
+	return ""
 }
