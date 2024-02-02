@@ -55,7 +55,7 @@ func GetHtmxData(r *http.Request) Htmx {
 
 func RedirectHtmx(w http.ResponseWriter, r *http.Request, url string) error {
 	htmx := IsHtmx(r)
-	if htmx {
+	if !htmx {
 		http.Redirect(w, r, url, http.StatusFound)
 		return nil
 	}
