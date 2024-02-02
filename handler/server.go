@@ -35,6 +35,7 @@ func (s server) SetupRoutes() {
 	http.HandleFunc("/register", s.handleErrors(s.handleRegister))
 	http.HandleFunc("/profile", s.handleErrors(s.handleProfile))
 	http.HandleFunc("/login", s.handleErrors(s.handleLogin))
+	http.HandleFunc("/logout", s.handleErrors(s.handleLogout))
 
 	if s.DevMode {
 		fs := http.FileServer(http.Dir("./static/"))
