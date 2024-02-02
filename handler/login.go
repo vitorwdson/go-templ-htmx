@@ -14,7 +14,7 @@ func (s server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 		return s.handleLoginPOST(w, r)
 	}
 
-	return InvalidMethod
+	return InvalidMethodError
 }
 
 func (s server) handleLoginGET(w http.ResponseWriter, r *http.Request) error {
@@ -39,10 +39,10 @@ func (s server) handleLoginPOST(w http.ResponseWriter, r *http.Request) error {
 		return utils.Render(w, r, pages.Login(props))
 	}
 
-	// err = s.authenticateUser(w, r, *user)
-	// if err != nil {
-	// 	return err
-	// }
+	err = s.authenticateUser(w, r, *user)
+	if err != nil {
+		return err
+	}
 
 	return utils.RedirectHtmx(w, r, "/profile")
 }

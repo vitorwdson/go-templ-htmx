@@ -15,7 +15,7 @@ func (s server) handleRegister(w http.ResponseWriter, r *http.Request) error {
 		return s.handleRegisterPOST(w, r)
 	}
 
-	return InvalidMethod
+	return InvalidMethodError
 }
 
 func (s server) handleRegisterGET(w http.ResponseWriter, r *http.Request) error {
@@ -57,10 +57,10 @@ func (s server) handleRegisterPOST(w http.ResponseWriter, r *http.Request) error
 			return err
 		}
 
-		// err = s.authenticateUser(w, r, *user)
-		// if err != nil {
-		// 	return err
-		// }
+		err = s.authenticateUser(w, r, *user)
+		if err != nil {
+			return err
+		}
 
 		return utils.RedirectHtmx(w, r, "/profile")
 	}

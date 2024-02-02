@@ -8,10 +8,10 @@ import (
 )
 
 func (s server) handleProfile(w http.ResponseWriter, r *http.Request) error {
-	// session, err := h.GetSession(c)
-	// if err != nil {
-	// 	return utils.RedirectHtmx(c, "/login")
-	// }
+	session, err := s.GetSession(w, r)
+	if err != nil {
+		return UserNotAuthenticatedError
+	}
 
-	return utils.Render(w, r, pages.Profile("John Doe"))
+	return utils.Render(w, r, pages.Profile(session.User.Name))
 }
