@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -11,25 +10,8 @@ import (
 	"github.com/vitorwdson/go-templ-htmx/handler"
 )
 
-func parseFlags() (devMode bool, runMigrations bool) {
-	devModeFlag := flag.Bool(
-		"dev",
-		false,
-		"Use develoment mode",
-	)
-
-	runMigrationsFlag := flag.Bool(
-		"migrate",
-		false,
-		"Applies migrations and exits the program",
-	)
-
-	flag.Parse()
-	return *devModeFlag, *runMigrationsFlag
-}
-
 func main() {
-	devMode, runMigrations := parseFlags()
+	devMode := os.Getenv("DEV_MODE") == "true"
 
 	if devMode {
 		godotenv.Load()
@@ -37,11 +19,6 @@ func main() {
 
 	dbConnection := db.MustConnect()
 	defer dbConnection.Close()
-
-	if runMigrations {
-		db.RunMigrations(dbConnection)
-		os.Exit(0)
-	}
 
 	redis := db.MustConnectRedis()
 	defer redis.Close()
