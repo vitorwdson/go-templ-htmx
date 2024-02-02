@@ -10,7 +10,7 @@ type validationResult struct {
 	PasswordError string
 }
 
-func (r userRepo) Validate(
+func (r UserRepo) Validate(
 	name, username, email, password, confirmPassword string,
 ) validationResult {
 	result := validationResult{
@@ -55,7 +55,7 @@ func (r userRepo) Validate(
 	return result
 }
 
-func (r userRepo) CheckPasswordStrength(password string) string {
+func (r UserRepo) CheckPasswordStrength(password string) string {
 	if len(password) < 8 {
 		return "The password must contain at least eight characters."
 	}

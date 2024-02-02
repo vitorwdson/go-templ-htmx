@@ -6,17 +6,17 @@ import (
 	"github.com/vitorwdson/go-templ-htmx/data/models"
 )
 
-type userRepo struct {
+type UserRepo struct {
 	DB *sql.DB
 }
 
-func NewUserRepo(db *sql.DB) userRepo {
-	return userRepo{
+func NewUserRepo(db *sql.DB) UserRepo {
+	return UserRepo{
 		DB: db,
 	}
 }
 
-func (r userRepo) Save(u *models.User) error {
+func (r UserRepo) Save(u *models.User) error {
 	if u.ID != 0 {
 		// User exists in db, should update
 		_, err := r.DB.Exec(`
@@ -65,7 +65,7 @@ func getUserFromQuery(row *sql.Row) (*models.User, error) {
 	return &user, nil
 }
 
-func (r userRepo) GetByID(id int) (*models.User, error) {
+func (r UserRepo) GetByID(id int) (*models.User, error) {
 	row := r.DB.QueryRow(`
 		SELECT
 		    id,
@@ -82,7 +82,7 @@ func (r userRepo) GetByID(id int) (*models.User, error) {
 	return getUserFromQuery(row)
 }
 
-func (r userRepo) GetByUsername(username string) (*models.User, error) {
+func (r UserRepo) GetByUsername(username string) (*models.User, error) {
 	row := r.DB.QueryRow(`
 		SELECT
 		    id,
