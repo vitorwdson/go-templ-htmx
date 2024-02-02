@@ -30,6 +30,11 @@ var (
 		Message:    "Invalid body",
 		StatusCode: http.StatusBadRequest,
 	}
+
+	InvalidMethod = ServerError{
+		Message:    "Method not allowed",
+		StatusCode: http.StatusMethodNotAllowed,
+	}
 )
 
 func (s server) handleErrors(f RouteHandler) http.HandlerFunc {
