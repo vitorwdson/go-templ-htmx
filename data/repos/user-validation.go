@@ -1,6 +1,8 @@
 package repos
 
-import "strings"
+import (
+	"strings"
+)
 
 type validationResult struct {
 	Error         bool
@@ -28,7 +30,7 @@ func (r UserRepo) Validate(
 	} else if len(username) > 30 {
 		result.UsernameError = "The username is too big (max: 30)"
 		result.Error = true
-	} else if u, _ := r.GetByUsername(username); u != nil {
+	} else if _, err := r.GetByUsername(username); err == nil {
 		result.UsernameError = "This username already exists."
 		result.Error = true
 	}
