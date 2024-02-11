@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/vitorwdson/go-templ-htmx/data/models"
+	"github.com/vitorwdson/go-templ-htmx/db"
 	"github.com/vitorwdson/go-templ-htmx/utils"
 	"github.com/vitorwdson/go-templ-htmx/view/pages"
 )
@@ -39,15 +41,15 @@ func (s server) handleRegisterPOST(w http.ResponseWriter, r *http.Request) error
 		data.ConfirmPassword,
 	)
 
-	var user *models.User
+	var user *db.User
 	if !validation.Error {
-		user = &models.User{
+		user = &db.User{
 			Name:     data.Name,
 			Username: data.Username,
-			Email:    data.Email,
+			Email:    sql.NullString{String: data.Email, Valid: true},
 		}
 
-		err := user.SetPassword([]byte(data.Password))
+		err := models.SetPassword(user, []byte(data.Password))
 		if err != nil {
 			return err
 		}

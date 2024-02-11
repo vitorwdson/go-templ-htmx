@@ -8,16 +8,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/vitorwdson/go-templ-htmx/data/models"
+	"github.com/vitorwdson/go-templ-htmx/db"
 )
 
 type Session struct {
 	ID        uuid.UUID
-	User      models.User
+	User      db.User
 	NextQuery time.Time
 }
 
-func (s server) authenticateUser(w http.ResponseWriter, r *http.Request, user models.User) error {
+func (s server) authenticateUser(w http.ResponseWriter, r *http.Request, user db.User) error {
 	sessionId, err := uuid.NewUUID()
 	if err != nil {
 		return err

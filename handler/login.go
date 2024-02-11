@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/vitorwdson/go-templ-htmx/data/models"
 	"github.com/vitorwdson/go-templ-htmx/utils"
 	"github.com/vitorwdson/go-templ-htmx/view/pages"
 )
@@ -30,7 +31,7 @@ func (s server) handleLoginPOST(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	user, err := s.UserRepo.GetByUsername(data.Username)
-	if err != nil || user == nil || !user.ValidatePassword(data.Password) {
+	if err != nil || user == nil || !models.ValidatePassword(*user, data.Password) {
 		props := pages.LoginViewProps{
 			Username: data.Username,
 			Error:    "The informed username and/or password is incorrect",
