@@ -1,7 +1,10 @@
-package repos
+package validation
 
 import (
+	"context"
 	"strings"
+
+	"github.com/vitorwdson/go-templ-htmx/db"
 )
 
 type validationResult struct {
@@ -12,8 +15,10 @@ type validationResult struct {
 	PasswordError string
 }
 
-func (r UserRepo) Validate(
+func ValidateUser(
 	name, username, email, password, confirmPassword string,
+	ctx context.Context,
+	db *db.Queries,
 ) validationResult {
 	result := validationResult{
 		Error: false,
@@ -30,12 +35,12 @@ func (r UserRepo) Validate(
 	} else if len(username) > 30 {
 		result.UsernameError = "The username is too big (max: 30)"
 		result.Error = true
-	} else if _, err := r.GetByUsername(username); err == nil {
+	} else if _, err := db.GetUserByUsername(ctx, username); err == nil {
 		result.UsernameError = "This username already exists."
 		result.Error = true
 	}
 
-	result.PasswordError = r.CheckPasswordStrength(password)
+	result.PasswordError = CheckPasswordStrength(password)
 	if len([]byte(password)) > 72 {
 		result.PasswordError = "The informed password is too big"
 	} else if result.PasswordError == "" && password != confirmPassword {
@@ -57,7 +62,7 @@ func (r UserRepo) Validate(
 	return result
 }
 
-func (r UserRepo) CheckPasswordStrength(password string) string {
+func CheckPasswordStrength(password string) string {
 	if len(password) < 8 {
 		return "The password must contain at least eight characters."
 	}

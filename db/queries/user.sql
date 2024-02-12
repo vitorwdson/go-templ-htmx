@@ -14,7 +14,7 @@ INSERT INTO
 VALUES
     ($1, $2, $3, $4)
 RETURNING
-    id;
+    *;
 
 
 -- name: GetUserByUsername :one

@@ -92,12 +92,12 @@ func (s server) GetSession(w http.ResponseWriter, r *http.Request) (*Session, er
 
 	if session.NextQuery.Compare(time.Now()) == -1 {
 
-		user, err := s.UserRepo.GetByID(session.User.ID)
-		if err != nil || user == nil {
+		user, err := s.DB.GetUserByID(r.Context(), session.User.ID)
+		if err != nil {
 			return nil, errors.New("Invalid user")
 		}
 
-		session.User = *user
+		session.User = user
 		session.NextQuery = time.Now().Add(time.Minute * 5)
 
 		err = s.saveSession(w, r, session)

@@ -1,4 +1,4 @@
-package models
+package validation
 
 import (
 	"errors"
@@ -12,12 +12,11 @@ func ValidatePassword(u db.User, password string) bool {
 	return err == nil
 }
 
-func SetPassword(u *db.User, newPassword []byte) error {
+func SetPassword(newPassword []byte) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword(newPassword, bcrypt.DefaultCost)
 	if err != nil {
-		return errors.New("Could not hash password")
+		return "", errors.New("Could not hash password")
 	}
 
-	u.PasswordHash = string(hashedPassword)
-	return nil
+	return string(hashedPassword), nil
 }
