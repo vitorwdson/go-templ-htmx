@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/vitorwdson/go-templ-htmx/data/validation"
+	"github.com/vitorwdson/go-templ-htmx/validation"
 	"github.com/vitorwdson/go-templ-htmx/db"
 	"github.com/vitorwdson/go-templ-htmx/utils"
 	"github.com/vitorwdson/go-templ-htmx/view/pages"
