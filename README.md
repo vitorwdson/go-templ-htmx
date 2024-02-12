@@ -1,10 +1,10 @@
 # GO-TEMPL-HTMX
 
-This project is a simple web app made in go using [templ](https://github.com/a-h/templ), [htmx](https://htmx.org/) and [tailwind](https://tailwindcss.com/).
+This project is a simple web app made in go using [templ](https://github.com/a-h/templ), [sqlc](https://sqlc.dev/), [htmx](https://htmx.org/) and [tailwind](https://tailwindcss.com/).
 
 ## Running
 
-First you need to generate the templ go files and tailwind styles using the command (note that you need to [install the templ command](https://templ.guide/quick-start/installation) to generate these files)
+First you need to generate the templ and sqlc go files and tailwind styles using the command (note that you need to install the [templ](https://templ.guide/quick-start/installation) and [sqlc](https://docs.sqlc.dev/en/stable/overview/install.html) commands to generate these files)
 
 ```bash
 make generate
