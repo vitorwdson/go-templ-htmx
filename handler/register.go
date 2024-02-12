@@ -10,16 +10,6 @@ import (
 	"github.com/vitorwdson/go-templ-htmx/view/pages"
 )
 
-func (s server) handleRegister(w http.ResponseWriter, r *http.Request) error {
-	if r.Method == http.MethodGet {
-		return s.handleRegisterGET(w, r)
-	} else if r.Method == http.MethodPost {
-		return s.handleRegisterPOST(w, r)
-	}
-
-	return InvalidMethodError
-}
-
 func (s server) handleRegisterGET(w http.ResponseWriter, r *http.Request) error {
 	props := pages.RegisterViewProps{}
 

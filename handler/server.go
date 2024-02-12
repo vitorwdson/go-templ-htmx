@@ -27,10 +27,12 @@ func NewServer(db *db.Queries, r *redis.Client, logger *log.Logger, devMode bool
 }
 
 func (s server) SetupRoutes() {
-	http.HandleFunc("/register", s.handleErrors(s.handleRegister))
-	http.HandleFunc("/profile", s.handleErrors(s.handleProfile))
-	http.HandleFunc("/login", s.handleErrors(s.handleLogin))
+	http.HandleFunc("GET /register", s.handleErrors(s.handleRegisterGET))
+	http.HandleFunc("POST /register", s.handleErrors(s.handleRegisterPOST))
+	http.HandleFunc("GET /login", s.handleErrors(s.handleLoginGET))
+	http.HandleFunc("POST /login", s.handleErrors(s.handleLoginPOST))
 	http.HandleFunc("/logout", s.handleErrors(s.handleLogout))
+	http.HandleFunc("/profile", s.handleErrors(s.handleProfile))
 
 	if s.DevMode {
 		fs := http.FileServer(http.Dir("./static/"))

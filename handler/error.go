@@ -39,7 +39,7 @@ var (
 
 func (s server) handleErrors(f RouteHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s.Logger.Println(r.URL.Path)
+		s.Logger.Println(r.Method, r.URL.Path)
 
 		err := f(w, r)
 		if err == nil {

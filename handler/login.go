@@ -3,20 +3,10 @@ package handler
 import (
 	"net/http"
 
-	"github.com/vitorwdson/go-templ-htmx/validation"
 	"github.com/vitorwdson/go-templ-htmx/utils"
+	"github.com/vitorwdson/go-templ-htmx/validation"
 	"github.com/vitorwdson/go-templ-htmx/view/pages"
 )
-
-func (s server) handleLogin(w http.ResponseWriter, r *http.Request) error {
-	if r.Method == http.MethodGet {
-		return s.handleLoginGET(w, r)
-	} else if r.Method == http.MethodPost {
-		return s.handleLoginPOST(w, r)
-	}
-
-	return InvalidMethodError
-}
 
 func (s server) handleLoginGET(w http.ResponseWriter, r *http.Request) error {
 	props := pages.LoginViewProps{}
