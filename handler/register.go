@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 
-	"github.com/vitorwdson/go-templ-htmx/data/models"
+	"github.com/vitorwdson/go-templ-htmx/validation"
+	"github.com/vitorwdson/go-templ-htmx/db"
 	"github.com/vitorwdson/go-templ-htmx/utils"
 	"github.com/vitorwdson/go-templ-htmx/view/pages"
 )
@@ -29,35 +31,34 @@ func (s server) handleRegisterPOST(w http.ResponseWriter, r *http.Request) error
 	if err != nil {
 		return err
 	}
-	s.Logger.Println(data)
 
-	validation := s.UserRepo.Validate(
+	result := validation.ValidateUser(
 		data.Name,
 		data.Username,
 		data.Email,
 		data.Password,
 		data.ConfirmPassword,
+		r.Context(),
+		s.DB,
 	)
 
-	var user *models.User
-	if !validation.Error {
-		user = &models.User{
+	if !result.Error {
+		passwordHash, err := validation.SetPassword([]byte(data.Password))
+		if err != nil {
+			return err
+		}
+
+		user, err := s.DB.CreateUser(r.Context(), db.CreateUserParams{
 			Name:     data.Name,
 			Username: data.Username,
-			Email:    data.Email,
-		}
-
-		err := user.SetPassword([]byte(data.Password))
+			PasswordHash: passwordHash,
+			Email:    sql.NullString{String: data.Email, Valid: true},
+		})
 		if err != nil {
 			return err
 		}
 
-		err = s.UserRepo.Save(user)
-		if err != nil {
-			return err
-		}
-
-		err = s.authenticateUser(w, r, *user)
+		err = s.authenticateUser(w, r, user)
 		if err != nil {
 			return err
 		}
@@ -69,10 +70,10 @@ func (s server) handleRegisterPOST(w http.ResponseWriter, r *http.Request) error
 		Name:          data.Name,
 		Username:      data.Username,
 		Email:         data.Email,
-		NameError:     validation.NameError,
-		UsernameError: validation.UsernameError,
-		EmailError:    validation.EmailError,
-		PasswordError: validation.PasswordError,
+		NameError:     result.NameError,
+		UsernameError: result.UsernameError,
+		EmailError:    result.EmailError,
+		PasswordError: result.PasswordError,
 	}
 
 	return utils.Render(w, r, pages.Register(props))

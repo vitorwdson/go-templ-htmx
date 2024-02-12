@@ -1,33 +1,28 @@
 package handler
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/vitorwdson/go-templ-htmx/data/repos"
+	"github.com/vitorwdson/go-templ-htmx/db"
 )
 
 type RouteHandler func(http.ResponseWriter, *http.Request) error
 
 type server struct {
-	DB       *sql.DB
+	DB       *db.Queries
 	Redis    *redis.Client
 	Logger   *log.Logger
-	UserRepo *repos.UserRepo
 	DevMode  bool
 }
 
-func NewServer(db *sql.DB, r *redis.Client, logger *log.Logger, devMode bool) server {
-	userRepo := repos.NewUserRepo(db)
-
+func NewServer(db *db.Queries, r *redis.Client, logger *log.Logger, devMode bool) server {
 	return server{
 		DB:       db,
 		Redis:    r,
 		Logger:   logger,
 		DevMode:  devMode,
-		UserRepo: &userRepo,
 	}
 }
 

@@ -24,7 +24,9 @@ func main() {
 	defer redis.Close()
 
 	logger := log.Default()
-	s := handler.NewServer(dbConnection, redis, logger, devMode)
+	dbQueries := db.New(dbConnection)
+
+	s := handler.NewServer(dbQueries, redis, logger, devMode)
 	s.SetupRoutes()
 
 	logger.Println("Listening on port 3333")

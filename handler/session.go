@@ -8,16 +8,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/vitorwdson/go-templ-htmx/data/models"
+	"github.com/vitorwdson/go-templ-htmx/db"
 )
 
 type Session struct {
 	ID        uuid.UUID
-	User      models.User
+	User      db.User
 	NextQuery time.Time
 }
 
-func (s server) authenticateUser(w http.ResponseWriter, r *http.Request, user models.User) error {
+func (s server) authenticateUser(w http.ResponseWriter, r *http.Request, user db.User) error {
 	sessionId, err := uuid.NewUUID()
 	if err != nil {
 		return err
@@ -92,12 +92,12 @@ func (s server) GetSession(w http.ResponseWriter, r *http.Request) (*Session, er
 
 	if session.NextQuery.Compare(time.Now()) == -1 {
 
-		user, err := s.UserRepo.GetByID(session.User.ID)
-		if err != nil || user == nil {
+		user, err := s.DB.GetUserByID(r.Context(), session.User.ID)
+		if err != nil {
 			return nil, errors.New("Invalid user")
 		}
 
-		session.User = *user
+		session.User = user
 		session.NextQuery = time.Now().Add(time.Minute * 5)
 
 		err = s.saveSession(w, r, session)

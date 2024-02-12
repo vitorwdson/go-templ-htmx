@@ -1,8 +1,8 @@
 CREATE TYPE task_status AS ENUM('todo', 'doing', 'done', 'canceled');
 
 
-CREATE TABLE task (
-    id serial PRIMARY KEY,
+CREATE TABLE tasks (
+    id serial PRIMARY key,
     title VARCHAR(100) NOT NULL,
     created_by INTEGER NOT NULL REFERENCES "users" (id),
     status task_status NOT NULL,
